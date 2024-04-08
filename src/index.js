@@ -1,5 +1,5 @@
 import {initializeApp} from "firebase/app"
-import {collection, getFirestore, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, where} from 'firebase/firestore'
+import {collection, getFirestore, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, where, orderBy, serverTimestamp} from 'firebase/firestore'
 const firebaseConfig = {
     apiKey: "AIzaSyC2fqLhKS07epe4OT-LGxenPkRx7angaBU",
     authDomain: "firbase-9-dojo-4a929.firebaseapp.com",
@@ -18,7 +18,7 @@ const firebaseConfig = {
 
    const colref = collection(db, 'books');
 
-   const q = query(colref, where("author", "==", "brandon"))
+   const q = query(colref, orderBy('createdAt'))
 
    // get collection data
 
@@ -36,7 +36,8 @@ const firebaseConfig = {
       e.preventDefault();
       addDoc(colref, {
         title: addBookForm.title.value,
-        author: addBookForm.author.value
+        author: addBookForm.author.value,
+        createdAt: serverTimestamp()
       })
       .then(() => {
         addBookForm.reset()
