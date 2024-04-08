@@ -1,5 +1,21 @@
 import {initializeApp} from "firebase/app"
-import {collection, getFirestore, getDocs, addDoc, deleteDoc, doc, onSnapshot, query, where, orderBy, serverTimestamp} from 'firebase/firestore'
+import {collection, 
+  getFirestore, 
+  getDocs, 
+  addDoc, 
+  deleteDoc, 
+  doc, 
+  onSnapshot, 
+  query, 
+  where, 
+  orderBy, 
+  serverTimestamp, 
+  updateDoc} from 'firebase/firestore'
+  import {getAuth,
+    createUserWithEmailAndPassword
+
+  } from 'firebase/auth'
+
 const firebaseConfig = {
     apiKey: "AIzaSyC2fqLhKS07epe4OT-LGxenPkRx7angaBU",
     authDomain: "firbase-9-dojo-4a929.firebaseapp.com",
@@ -30,6 +46,11 @@ const firebaseConfig = {
       console.log(books)
     })
 
+    //get a single doc
+    const docref = doc(db, 'books', "CLgsXcLWn6vIMCLwn7TA")
+    onSnapshot(docref, (doc) =>{
+      console.log(doc.data())
+    })
     //add
     const addBookForm = document.querySelector('.add'); 
     addBookForm.addEventListener('submit', (e) =>{
@@ -74,3 +95,47 @@ const firebaseConfig = {
       addName.reset()
     })
     
+    //update
+    const updateBookForm = document.querySelector('.update'); 
+    updateBookForm.addEventListener('submit', (e) =>{
+      e.preventDefault()
+      const docRef = doc(db, 'books', updateBookForm.id.value)
+      updateDoc(docRef, {
+        title: 'no problem'
+      })
+      .then(() => {
+        updateBookForm.reset()
+      })
+    })
+
+
+    //init auth
+    const auth = getAuth();
+
+    //signup user
+    const signupForm = document.querySelector('.signup')
+    signupForm.addEventListener('submit', (e) => {
+        e.preventDefault()
+
+        const email = signupForm.email.value;
+        const password = signupForm.password.value;
+        createUserWithEmailAndPassword(auth, email, password)
+        .then((cred) => {
+          console.log('user created', cred.user);
+          signupForm.reset()
+        })
+        .catch((err) => {
+          console.log(err.message)
+        })
+    })
+
+    //log in and out
+    const logoutButton = document.querySelector('.logout')
+    logoutButton.addEventListener('click', (e) =>{
+      e.preventDefault()
+    })
+
+    const loginForm = document.querySelector('.login')
+    loginForm.addEventListener('submit', (e) =>{
+      e.preventDefault()
+    })
