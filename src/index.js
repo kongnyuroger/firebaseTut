@@ -12,7 +12,9 @@ import {collection,
   serverTimestamp, 
   updateDoc} from 'firebase/firestore'
   import {getAuth,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    signOut,
+    signInWithEmailAndPassword
 
   } from 'firebase/auth'
 
@@ -132,10 +134,23 @@ const firebaseConfig = {
     //log in and out
     const logoutButton = document.querySelector('.logout')
     logoutButton.addEventListener('click', (e) =>{
-      e.preventDefault()
+       signOut(auth)
+       .then(() => {
+        console.log("user signed out")
+       })
+       .catch((err) => {
+        console.log(err.message)
+       })
     })
 
     const loginForm = document.querySelector('.login')
     loginForm.addEventListener('submit', (e) =>{
       e.preventDefault()
+      const email = loginForm.email.value;
+      const password = loginForm.password.value;
+      signInWithEmailAndPassword(auth, email, password)
+      .then((cred) => {
+        console.log('user loged in:', cred.user)
+      })
+      .catch(err => console.log(err.message))
     })
